@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
 # 5 Tests for HTMLNode class
@@ -69,6 +69,7 @@ class TestHTMLNode(unittest.TestCase):
             node.__repr__(),
             "HTMLNode(p, What a strange world, children: None, {'class': 'primary'})",
         )
+        
 # 3 Tests for LeafNode class
     def test_leaf_to_html_p(self):
         node = LeafNode("p", "Hello, world!")
@@ -82,3 +83,33 @@ class TestHTMLNode(unittest.TestCase):
     def test_leaf_to_html_no_tag(self):
         node = LeafNode(None, "Hello, world!")
         self.assertEqual(node.to_html(), "Hello, world!")
+
+# 3 Tests for ParentNode class
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_to_html_with_multiple_grandchildren(self):
+        test_props = {"href": "https://www.google.com","target": "_blank"}
+        great_grandchild_node = LeafNode("li", "Item 1", test_props)
+        great_grandchild_node2 = LeafNode("li", "Item 2")
+        great_grandchild_node3 = LeafNode("li", "Item 3")
+        grandchild_node = LeafNode("b", "grandchild")
+        grandchild_node2 = LeafNode("i", "grandchild 2!")
+        grandchild_node3 = ParentNode("ol", [great_grandchild_node, great_grandchild_node2, great_grandchild_node3])
+        child_node = ParentNode("span", [grandchild_node, grandchild_node2, grandchild_node3])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b><i>grandchild 2!</i><ol><li href=\"https://www.google.com\" target=\"_blank\">Item 1</li><li>Item 2</li><li>Item 3</li></ol></span></div>",
+        )
