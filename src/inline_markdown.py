@@ -1,3 +1,4 @@
+import re
 from textnode import TextNode, TextType
 # Function to convert Markdown nodes to TextNodes
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -22,3 +23,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             delimiter_count += 1
     return new_nodes
     
+#Function to extract links and images from Markdown using regex
+def extract_markdown_images(text):
+    image_pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(image_pattern, text)
+
+def extract_markdown_links(text):
+    link_pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    return re.findall(link_pattern, text)
