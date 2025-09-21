@@ -22,8 +22,60 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 new_nodes.append(TextNode(section, TextType.TEXT))
             delimiter_count += 1
     return new_nodes
-    
-#Function to extract links and images from Markdown using regex
+
+# Function to convert Markdown Image nodes to TextNodes
+def split_nodes_image(old_nodes):
+    new_nodes= []
+    for node in old_nodes:
+        text = node.text
+        if node.text_type != TextType.TEXT: # If node is not of type 'TEXT', append it and skip loop
+            new_nodes.append(node)
+            continue
+        if not text: # if TextNode has no text, skip node
+            continue
+        matches = extract_markdown_images(node.text)
+        if not matches: # if TextNode has no text matching markdown image pattern, append text as TextType.text
+            new_nodes.append(node)
+            continue
+        for match in matches:
+            sections = text.split(f"![{match[0]}]({match[1]})", 1)
+            if len(sections) != 2:
+                raise ValueError("invalid markdown, image section not closed")
+            if sections[0] != "": # If text did not start with a match, then append the normal text first
+                new_nodes.append(TextNode(sections[0], TextType.TEXT))
+            new_nodes.append(TextNode(match[0], TextType.IMAGE, match[1]))
+            text = sections[1]
+        if text != "":
+            new_nodes.append(TextNode(text, TextType.TEXT))
+    return new_nodes
+
+# Function to convert Markdown Link nodes to TextNodes
+def split_nodes_link(old_nodes):
+    new_nodes= []
+    for node in old_nodes:
+        text = node.text
+        if node.text_type != TextType.TEXT: # If node is not of type 'TEXT', append it and skip loop
+            new_nodes.append(node)
+            continue
+        if not text: # if TextNode has no text, skip node
+            continue
+        matches = extract_markdown_links(node.text)
+        if not matches: # if TextNode has no text matching markdown image pattern, append text as TextType.text
+            new_nodes.append(node)
+            continue
+        for match in matches:
+            sections = text.split(f"[{match[0]}]({match[1]})", 1)
+            if len(sections) != 2:
+                raise ValueError("invalid markdown, image section not closed")
+            if sections[0] != "": # If text did not start with a match, then append the normal text first
+                new_nodes.append(TextNode(sections[0], TextType.TEXT))
+            new_nodes.append(TextNode(match[0], TextType.LINK, match[1]))
+            text = sections[1]
+        if text != "":
+            new_nodes.append(TextNode(text, TextType.TEXT))
+    return new_nodes
+
+# Function to extract links and images from Markdown using regex
 def extract_markdown_images(text):
     image_pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(image_pattern, text)
