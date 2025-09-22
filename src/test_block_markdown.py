@@ -1,5 +1,5 @@
 import unittest
-from block_markdown import markdown_to_blocks
+from block_markdown import BlockType, markdown_to_blocks, block_to_block_type
 
 class TestBlockMarkdown(unittest.TestCase):
 # 2 Test for 'markdown_to_blocks' function
@@ -66,3 +66,31 @@ _Alright I guess we can wrap up the text._ It is getting kinda long.
                 "1. This too\n2. is a list\n3. with a couple\n4. of items"
             ],
         )
+# 2 Tests for 'block_to_block_types'
+    def test_block_to_block_types(self):
+        block = "# heading"
+        self.assertEqual(block_to_block_type(block), BlockType.HEADING)
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
+        block = "> quote\n> more quote"
+        self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
+        block = "- list\n- items"
+        self.assertEqual(block_to_block_type(block), BlockType.ULIST)
+        block = "1. list\n2. items"
+        self.assertEqual(block_to_block_type(block), BlockType.OLIST)
+        block = "paragraph"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+    def test_block_to_block_types_complex(self):
+        block = ".### heading"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+        block = "```\ncode\nmore code\neven more code here\n the last of some more code\n```"
+        self.assertEqual(block_to_block_type(block), BlockType.CODE)
+        block = "> quote\n > more quote\n> even more quote\n> too much quote now"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+        block = "- list\n- items\n- more items\n- suprisingly more items"
+        self.assertEqual(block_to_block_type(block), BlockType.ULIST)
+        block = "1. list\n2. items\n4. items"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+        block = "paragraph for the finale"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
