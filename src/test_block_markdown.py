@@ -1,5 +1,5 @@
 import unittest
-from block_markdown import BlockType, markdown_to_blocks, block_to_block_type
+from block_markdown import BlockType, markdown_to_blocks, block_to_block_type, extract_title
 
 class TestBlockMarkdown(unittest.TestCase):
 # 2 Test for 'markdown_to_blocks' function
@@ -94,3 +94,57 @@ _Alright I guess we can wrap up the text._ It is getting kinda long.
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
         block = "paragraph for the finale"
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+# 3 Tests for 'extract_title' function
+
+    def test_markdown_header(self):
+        markdown_text = "# This header is too easy"
+
+        header = extract_title(markdown_text)
+
+    def test_markdown_header2(self):
+        markdown_text = """## This header is too easy
+
+#Is it this one?
+
+#. Or this one??
+ # Gotta be this one for sure
+
+# Ok, It's a me a header"""
+
+        header = extract_title(markdown_text)
+
+        self.assertEqual(header, "Ok, It's a me a header")
+
+    def test_markdown_header3(self):
+        markdown_text = """
+**This is bolded paragraph**
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)
+This is the end of the paragraph, **I suppose**.  
+
+
+# Where's the Header???
+
+
+This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)
+_Alright I guess we can wrap up the text._ It is getting kinda long.
+
+
+
+- This is a list
+- with items
+
+
+1. This too
+2. is a list
+3. with a couple
+4. of items
+"""
+
+        header = extract_title(markdown_text)
+
+        self.assertEqual(header, "Where's the Header???")

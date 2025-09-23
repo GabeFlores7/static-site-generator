@@ -42,3 +42,12 @@ def block_to_block_type(block):
             i += 1
         return BlockType.OLIST
     return BlockType.PARAGRAPH
+
+# Function that takes Markdown input and returns the h1 header
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        if block.startswith('# '):
+            return block.replace('# ', '').strip()
+    raise Exception("Invalid Markdown: No h1 header")
+    
