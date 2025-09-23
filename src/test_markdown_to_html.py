@@ -55,7 +55,7 @@ the **same** even with inline stuff
 
         self.assertEqual(
             html,
-            "<div><blockquote><p>Roses are <b>red</b> Violets are <i>blue</i> I forgot what to write after the <b>second line</b></p></blockquote></div>",
+            "<div><blockquote>Roses are <b>red</b> Violets are <i>blue</i> I forgot what to write after the <b>second line</b></blockquote></div>",
         )
     
     def test_ulist(self):

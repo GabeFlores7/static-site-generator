@@ -63,8 +63,7 @@ def quote_block_to_html_node(markdown_block):
             clean_lines.append(line[2:]) # exclude '> ' in each line
     text = " ".join(clean_lines)
     children_nodes = text_to_children(text)
-    html_node = ParentNode('p', children_nodes)
-    return ParentNode('blockquote', [html_node])
+    return ParentNode('blockquote', children_nodes)
 
 def ulist_block_to_html_node(markdown_block):
     lines = markdown_block.strip().split("\n")
