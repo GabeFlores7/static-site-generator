@@ -26,3 +26,18 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, mode= 'w') as f:
         f.write(webpage)
     
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    # Make dest path if nonexistent
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+    # Store content entries into a list using input 'dir_path_content'
+    entries_list = os.listdir(dir_path_content)
+    # Make webpage if entry is file. Recurively call function if directory
+    for entry in entries_list:
+        content_entry_path = os.path.join(dir_path_content, entry)
+        new_dst_path = os.path.join(dest_dir_path, entry)
+        if os.path.isfile(content_entry_path):
+            new_dst_path = new_dst_path.replace('.md', '.html') # correct file extension
+            generate_page(content_entry_path, template_path, new_dst_path)
+        else:
+            generate_pages_recursive(content_entry_path, template_path, new_dst_path)
