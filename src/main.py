@@ -21,7 +21,7 @@ def main():
     print(f"Deleting {webpage_path.replace('./', '')} directory...")
     # Delete everything in dst folder upon intial start of function
     if os.path.exists(webpage_path):
-        shutil.rmtree(webpage_path_path)
+        shutil.rmtree(webpage_path)
     # Recursively copy static files to docs directory 
     print(f"Copying {static_path.replace('./', '')} files to {webpage_path.replace('./', '')} directory...")
     copy_static_to(static_path, webpage_path)
