@@ -4,7 +4,7 @@ from block_markdown import extract_title
 
 # Function to generate and serve webpage
 def generate_page(from_path, template_path, dest_path, basepath):
-    # Function initialization/ read files
+    # Function initialization read files
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, mode= 'r') as f:
         md_file = f.read()
